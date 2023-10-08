@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import axios from 'axios';
-import './App.css';
+import {
+  Route,
+  Routes,
+  BrowserRouter
+} from 'react-router-dom'
+import Home from "./components/Home"
+import Register from "./components/Register"
+import NoPage from "./components/NoPage"
+import Layout from "./components/Layout"
+import Login from "./components/Login"
 
 function App() {
-  const [message, setMessage] = useState("")
-
-  const fetchHelloMessage = () => {
-    axios.get("http://localhost:8000/")
-      .then(response => {
-        setMessage(response.data.message)
-      })
-  }
-
-  useEffect(() => {
-    fetchHelloMessage()
-  }, [])
-
   return (
-    <div className="App">
-      <div className="container-fluid">
-        <p>{message}</p>
-      </div>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="register" element={<Register />} />
+          <Route path="login" element={<Login />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App;
