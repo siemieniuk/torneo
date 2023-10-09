@@ -7,7 +7,7 @@ function Layout(): JSX.Element {
   return (
     <>
       <Header />
-      <div className="container vh-100">
+      <div className="container vh-100 pt-5">
         <Outlet />
       </div>
       <Footer />

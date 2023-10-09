@@ -7,17 +7,18 @@ function Home(): JSX.Element {
   const fetchHelloMessage = () => {
     axios.get("http://localhost:8000/auth")
       .then(response => {
-        setMessage(response.data.message)
+        console.log(response.data)
       })
   }
 
   useEffect(() => {
     fetchHelloMessage()
   }, [])
-
   return (
     <div className="App">
       <div className="container-fluid">
+        <h1>Hello {localStorage.getItem("sub")}</h1>
+        <p>{localStorage.getItem("access-token")}</p>
         <p>{message}</p>
       </div>
     </div>

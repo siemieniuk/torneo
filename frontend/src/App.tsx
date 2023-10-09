@@ -8,6 +8,11 @@ import Register from "./components/Register"
 import NoPage from "./components/NoPage"
 import Layout from "./components/Layout"
 import Login from "./components/Login"
+import axios from 'axios'
+
+axios.defaults.withCredentials = true;
+
+const serverUrl = process.env.REACT_APP_SERVER_URL
 
 function App() {
   return (
