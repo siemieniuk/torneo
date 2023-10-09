@@ -1,23 +1,16 @@
 from datetime import timedelta
 from typing import Annotated
 
-import schemas as _schemas
-from algorithms.str_operations import str_empty
-from backend.config import ACCESS_TOKEN_EXPIRE_MINUTES
-from backend.database import get_db
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+import schema as schemas
+from core.database import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from services.auth import (
-    authenticate_user,
-    create_access_token,
-    create_user,
-    get_current_active_user,
-    get_user,
-)
-from sqlalchemy.orm import Session
+from model import models as models
+from service.user_service import *
+from util.str_operations import str_empty
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.get("/")
@@ -26,10 +19,13 @@ async def hello_world():
 
 
 @router.post("/token")
-async def login_for_access_token(
-    response: Response, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+async def login(
+    data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: SessionLocal = Depends(get_db),
 ):
-    user = authenticate_user(form_data.username, form_data.password)
+    email = data.username
+    password = data.password
+    user = authenticate_user(email, password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -41,7 +37,7 @@ async def login_for_access_token(
     # access_token = create_access_token(
     #     data={"sub": user.username}, expires_delta=access_token_expires
     # )
-    access_token = create_access_token(data={"sub": user.email})
+    access_token = manager.create_access_token(data={"sub": email})
 
     return {
         "access_token": access_token,
@@ -52,14 +48,14 @@ async def login_for_access_token(
 # TODO: Password validation
 # TODO: Email validation
 @router.post("/register")
-async def register_user(user: _schemas.UserCreate):
+async def register_user(user: schemas.UserCreate, db: SessionLocal = Depends(get_db)):
     if str_empty(user.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email is required",
         )
 
-    db_user = get_user(user.email)
+    db_user = get_user_by_email(user.email, db)
     if db_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -72,13 +68,11 @@ async def register_user(user: _schemas.UserCreate):
             detail="Passwords do not match",
         )
 
-    db_user = create_user(user)
+    db_user = create_user(user, db)
 
     return status.HTTP_201_CREATED
 
 
-@router.get("/users/me", response_model=_schemas.User)
-async def read_users_me(
-    current_user: Annotated[_schemas.User, Depends(get_current_active_user)]
-) -> _schemas.User:
+@router.get("/users/me", response_model=schemas.User)
+async def read_users_me(current_user=Depends(manager)) -> schemas.User:
     return current_user
