@@ -29,11 +29,10 @@ class Discipline(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
     users: Mapped[List["User"]] = relationship(
-        secondary=user_discipline_association_table, back_populates="discipline_users"
+        secondary=user_discipline_association_table,
+        back_populates="favourite_disciplines",
     )
-    tournaments: Mapped[List["Tournament"]] = relationship(
-        back_populates="discipline_tournament"
-    )
+    tournaments: Mapped[List["Tournament"]] = relationship(back_populates="discipline")
 
 
 # TODO: location - geometry
@@ -45,29 +44,32 @@ class Tournament(Base):
     time_finish: Mapped[datetime] = mapped_column(DateTime)
     max_number_of_participants: Mapped[int] = mapped_column(Integer, nullable=False)
     players: Mapped[List["User"]] = relationship(
-        secondary=tournament_assignment, back_populates="tournament_users"
+        secondary=tournament_assignment, back_populates="tournaments"
     )
     discipline_id: Mapped[int] = mapped_column(ForeignKey("disciplines.id"))
-    discipline: Mapped["Discipline"] = relationship(
-        back_populates="tournament_discipline"
-    )
+    discipline: Mapped["Discipline"] = relationship(back_populates="tournaments")
     organizer_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    organizer: Mapped["User"] = relationship(back_populates="organizer_tournament")
+    organizer: Mapped["User"] = relationship(back_populates="organized_tournaments")
 
 
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
+    first_name: Mapped[str] = mapped_column(String(30), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(30), nullable=False)
     email: Mapped[str] = mapped_column(String(254), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(256), nullable=False)
-    active: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    disabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    organized_tournaments: Mapped[List["Tournament"]] = relationship(
+        back_populates="organizer"
+    )
     favourite_disciplines: Mapped[List["Discipline"]] = relationship(
-        secondary=user_discipline_association_table, back_populates="user_disciplines"
+        secondary=user_discipline_association_table, back_populates="users"
     )
     tournaments: Mapped[List["Tournament"]] = relationship(
-        secondary=tournament_assignment, back_populates="user_tournaments"
+        secondary=tournament_assignment, back_populates="players"
     )
 
 
