@@ -6,7 +6,7 @@ import isAuthenticated from "../context/isAuthenticated";
 function Home(): JSX.Element {
   const [name, setName] = useState("")
   const fetchHelloMessage = () => {
-    axios.get("http://localhost:8000/auth")
+    axios.get("http://localhost:8000/api/v1/auth")
       .then(response => {
         console.log(response.data)
       })
