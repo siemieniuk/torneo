@@ -1,9 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import Form from "react-bootstrap/Form"
 import { useNavigate } from "react-router-dom";
 import qs from "qs"
+
+import { GlobalContext } from "../App";
 
 function Login(): JSX.Element {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ function Login(): JSX.Element {
   const [password, setPassword] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useContext(GlobalContext);
 
   useEffect(() => {
     console.log(localStorage.getItem("token"));
@@ -35,7 +38,7 @@ function Login(): JSX.Element {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       data: qs.stringify(payload),
-      url: "http://localhost:8000/auth/token"
+      url: "http://localhost:8000/api/v1/auth/token"
     };
 
     axios(options)
@@ -43,6 +46,7 @@ function Login(): JSX.Element {
         setIsSubmitting(false);
         localStorage.setItem("access-token", r.data.access_token);
         localStorage.setItem("sub", r.data.sub);
+        setIsAuthenticated(true);
         navigate("/")
       })
       .catch((e) => {

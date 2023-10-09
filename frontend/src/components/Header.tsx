@@ -2,8 +2,10 @@
 import Nav from "react-bootstrap/Nav"
 import Navbar from "react-bootstrap/Navbar"
 import Container from "react-bootstrap/Container"
+import isAuthenticated from "../context/isAuthenticated";
 
 function Header(): JSX.Element {
+
   function logout() {
     localStorage.clear();
     window.location.href = "/";
@@ -17,13 +19,13 @@ function Header(): JSX.Element {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
-            {!localStorage.getItem("access-token") ?
+            {isAuthenticated() ?
+              <>
+                <Nav.Link onClick={logout}>Logout</Nav.Link>
+              </> :
               <>
                 <Nav.Link href="/register/">Register</Nav.Link>
                 <Nav.Link href="/login/">Login</Nav.Link>
-              </> :
-              <>
-                <Nav.Link onClick={logout}>Logout</Nav.Link>
               </>
             }
           </Nav>
