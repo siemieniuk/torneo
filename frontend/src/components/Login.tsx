@@ -5,9 +5,15 @@ import Form from "react-bootstrap/Form"
 import { useNavigate } from "react-router-dom";
 import qs from "qs"
 
+import isAuthenticated from "../context/isAuthenticated";
+
 import { GlobalContext } from "../App";
 
-function Login(): JSX.Element {
+function Login(): React.JSX.Element {
+  // if (isAuthenticated()) {
+
+  // }
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

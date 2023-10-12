@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import Form from "react-bootstrap/Form"
 import { useNavigate } from "react-router-dom";
 
-function Register() {
+function Register(): React.JSX.Element {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

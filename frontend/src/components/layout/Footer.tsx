@@ -1,6 +1,6 @@
 import React from "react"
 
-function Footer(): JSX.Element {
+function Footer(): React.JSX.Element {
   return (
     <footer className="page-footer font-small blue pt-4">
       <div className="container-fluid text-center text-md-left">

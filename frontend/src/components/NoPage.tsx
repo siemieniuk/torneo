@@ -1,6 +1,6 @@
 import React from "react";
 
-function NoPage(): JSX.Element {
+function NoPage(): React.JSX.Element {
   return (
     <div>Page not found</div>
   );

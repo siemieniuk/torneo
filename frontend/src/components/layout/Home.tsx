@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { GlobalContext } from "../App";
-import isAuthenticated from "../context/isAuthenticated";
+import { GlobalContext } from "../../App";
+import isAuthenticated from "../../context/isAuthenticated";
 
-function Home(): JSX.Element {
+function Home(): React.JSX.Element {
   const [name, setName] = useState("")
   const fetchHelloMessage = () => {
     axios.get("http://localhost:8000/api/v1/auth")
@@ -16,7 +16,7 @@ function Home(): JSX.Element {
     const token = localStorage.getItem("access-token")
     const options = {
       method: "GET",
-      url: "http://localhost:8000/api/v1/auth/users/me",
+      url: "http://localhost:8000/api/v1/auth/me",
       headers: {
         "Authorization": `Bearer ${token}`,
         "accept": "application/json",
@@ -25,7 +25,7 @@ function Home(): JSX.Element {
 
     axios(options)
       .then(response => {
-        setName(response.data.email)
+        setName(response.data.first_name)
       })
   }
 

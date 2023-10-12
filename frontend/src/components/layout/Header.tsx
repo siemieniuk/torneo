@@ -1,10 +1,11 @@
-// import React from "react"
+import React from "react";
 import Nav from "react-bootstrap/Nav"
 import Navbar from "react-bootstrap/Navbar"
 import Container from "react-bootstrap/Container"
-import isAuthenticated from "../context/isAuthenticated";
 
-function Header(): JSX.Element {
+import isAuthenticated from "../../context/isAuthenticated";
+
+function Header(): React.JSX.Element {
 
   function logout() {
     localStorage.clear();
