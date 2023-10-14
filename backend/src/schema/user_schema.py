@@ -1,24 +1,38 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 
 
-class User(BaseModel):
+class UserSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
     first_name: str
     last_name: str
     email: EmailStr
-    disabled: bool | None = None
 
 
-class UserLogin(BaseModel):
+class UserLoginSchema(BaseModel):
     email: EmailStr
     password: str
 
 
-class UserCreate(UserLogin):
+class UserRegisterSchema(UserLoginSchema):
+    password2: str
     first_name: str
     last_name: str
-    email: EmailStr
-    password2: str
+
+    @model_validator(mode="after")
+    def check_passwords_match(self):
+        pass2 = self.password2
+        pass1 = self.password
+        if pass1 != pass2:
+            raise ValueError("Passwords do not match")
+        return self
 
 
-class UserInDB(User):
-    hashed_password: str
+class UserCreateSchema(UserSchema):
+    password: str
+
+
+class UserInDB(UserSchema):
+    password: str
+    disabled: bool | None = None
