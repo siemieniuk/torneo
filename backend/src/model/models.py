@@ -1,10 +1,12 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
-from core.database import Base
 from geoalchemy2 import Geometry
 from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
+
+from core.database import Base
 
 user_discipline_association_table = Table(
     "user_disciplines",
@@ -53,7 +55,7 @@ class Tournament(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     time_start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    time_finish: Mapped[datetime] = mapped_column(DateTime)
+    time_finish: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     max_number_of_participants: Mapped[int] = mapped_column(Integer, nullable=False)
     players: Mapped[List["User"]] = relationship(
         secondary="tournament_assignments", back_populates="tournaments"
@@ -62,6 +64,8 @@ class Tournament(Base):
     discipline: Mapped["Discipline"] = relationship(back_populates="tournaments")
     organizer_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     organizer: Mapped["User"] = relationship(back_populates="organized_tournaments")
+    sponsor_id: Mapped[int | None] = mapped_column(ForeignKey("sponsors.id"))
+    sponsor: Mapped[Optional["Sponsor"]] = relationship(back_populates="tournaments")
 
 
 class Sponsor(Base):
@@ -69,6 +73,7 @@ class Sponsor(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     img_path: Mapped[str | None] = mapped_column(String(256))
+    tournaments: Mapped[List["Tournament"]] = relationship(back_populates="sponsor")
 
 
 class User(Base):
@@ -78,8 +83,8 @@ class User(Base):
     first_name: Mapped[str] = mapped_column(String(30), nullable=False)
     last_name: Mapped[str] = mapped_column(String(30), nullable=False)
     email: Mapped[str] = mapped_column(String(254), nullable=False, unique=True)
-    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
-    disabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     organized_tournaments: Mapped[List["Tournament"]] = relationship(
         back_populates="organizer"
