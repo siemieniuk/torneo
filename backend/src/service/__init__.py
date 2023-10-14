@@ -1,0 +1,4 @@
+from service.auth_service import AuthService
+from service.discipline_service import DisciplineService
+from service.tournament_service import TournamentService
+from service.user_service import UserService
