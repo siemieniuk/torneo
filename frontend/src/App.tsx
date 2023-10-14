@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import { useState } from 'react'
 
-import Home from "./components/layout/Home"
+import Home from "./components/Home"
 import Register from "./components/Register"
 import NoPage from "./components/NoPage"
 import Layout from "./components/layout/Layout"

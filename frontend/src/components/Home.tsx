@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { GlobalContext } from "../../App";
-import isAuthenticated from "../../context/isAuthenticated";
+import { GlobalContext } from "../App";
+import isAuthenticated from "../context/isAuthenticated";
 
 function Home(): React.JSX.Element {
   const [name, setName] = useState("")
