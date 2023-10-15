@@ -3,7 +3,12 @@ import datetime
 from fastapi import HTTPException, status
 
 from repository.tournament_repository import TournamentRepository
-from schema.tournament_schema import TournamentCreateSchema, TournamentInsertSchema
+from schema.tournament_schema import (
+    TournamentCreateSchema,
+    TournamentInsertSchema,
+    TournamentSchema,
+    TournamentUpdateSchema,
+)
 from schema.user_schema import UserSchema
 from service.base_service import BaseService
 
@@ -50,3 +55,32 @@ class TournamentService(BaseService):
         )
 
         return self.tournament_repository.create(new_record)
+
+    def update(
+        self,
+        tournament_id: int,
+        tournament: TournamentUpdateSchema,
+        user: UserSchema,
+    ):
+        if not self._is_owner(tournament_id, user):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        db_tournament = self.tournament_repository.update(tournament_id, tournament)
+        return db_tournament
+
+    def delete(self, tournament_id: int, user: UserSchema):
+        if not self._is_owner(tournament_id, user):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        self.tournament_repository.delete(tournament_id)
+        return True
+
+    def _is_owner(self, tournament_id: int, user: UserSchema) -> bool:
+        db_tournament = self.tournament_repository.read_by_id(tournament_id)
+        db_tournament = TournamentSchema.model_validate(db_tournament)
+
+        return db_tournament.organizer_id == user.id

@@ -17,7 +17,7 @@ class BaseService:
         result = self._repository.read_all()
         return result
 
-    def read_paginated(self):
+    def read_paginated(self, ):
         return self._repository.read_paginated()
 
     def update(self, obj_id: int, schema):

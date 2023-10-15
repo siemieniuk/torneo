@@ -8,12 +8,20 @@ class TournamentSchema(BaseModel):
 
     id: int
     name: str
-    # time_start: datetime
-    # time_finish: datetime
+    time_start: datetime
+    time_finish: datetime
     max_number_of_participants: int
-    # discipline_id: int
-    # organizer_id: int
-    # sponsor_id: int | None
+    discipline_id: int
+    organizer_id: int
+    sponsor_id: int | None
+
+
+class TournamentUpdateSchema(BaseModel):
+    name: str | None
+    time_start: datetime | None
+    time_finish: datetime | None
+    discipline_id: int | None
+    sponsor_id: int | None
 
 
 class TournamentCreateSchema(BaseModel):
