@@ -54,7 +54,7 @@ class BaseRepository:
 
     def read_paginated(self, columns: List[str] = None):
         with self.session_factory() as session:
-            if columns:
+            if columns is None:
                 stmt = select(self.model)
             else:
                 stmt = select(self.model.c[*columns])
@@ -63,10 +63,11 @@ class BaseRepository:
     def update(self, obj_id: int, schema):
         with self.session_factory() as session:
             try:
+                values_to_change = schema.model_dump(exclude_none=True)
                 stmt = (
                     update(self.model)
                     .where(self.model.id == obj_id)
-                    .values(**schema.model_dump(exclude_none=True))
+                    .values(**values_to_change)
                 )
             except IntegrityError:
                 raise HTTPException(
