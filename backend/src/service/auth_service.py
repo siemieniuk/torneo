@@ -36,7 +36,7 @@ class AuthService(BaseService):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
         payload = Payload(
-            id=found_user["id"],
+            obj_id=found_user["obj_id"],
             first_name=found_user["first_name"],
             last_name=found_user["last_name"],
             email=found_user["email"],

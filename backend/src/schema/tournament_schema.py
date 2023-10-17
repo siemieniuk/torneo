@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class TournamentSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    obj_id: int
     name: str
     time_start: datetime
     time_finish: datetime

@@ -36,7 +36,6 @@ class Database:
     @contextmanager
     def session(self) -> Callable[..., AbstractContextManager[Session]]:
         db: Session = self._session_factory()
-        print(type(db))
         try:
             yield db
         except Exception:

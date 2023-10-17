@@ -32,9 +32,9 @@ class BaseRepository:
                 )
             return query
 
-    def read_by_id(self, id: int):
+    def read_by_id(self, obj_id: int):
         with self.session_factory() as session:
-            stmt = select(self.model).where(self.model.id == id)
+            stmt = select(self.model).where(self.model.obj_id == obj_id)
             result = session.execute(stmt)
 
             object_in_db = result.scalars().first()
@@ -43,21 +43,25 @@ class BaseRepository:
                 raise NotFoundException
             return object_in_db
 
+    # TODO: Fix self.model.c
     def read_all(self, columns: List[str] = None):
         with self.session_factory() as session:
-            if columns:
+            if columns is None:
                 stmt = select(self.model)
             else:
-                stmt = select(self.model.c[*columns])
+                q_columns = [f"{self.model}.{c}" for c in columns]
+                stmt = select(*q_columns)
             result = session.execute(stmt).scalars().all()
             return result
 
+    # TODO: Fix self.model.c
     def read_paginated(self, columns: List[str] = None):
         with self.session_factory() as session:
             if columns is None:
                 stmt = select(self.model)
             else:
-                stmt = select(self.model.c[*columns])
+                q_columns = [f"{self.model}.{c}" for c in columns]
+                stmt = select(*q_columns)
             return paginate(session, stmt)
 
     def update(self, obj_id: int, schema):
@@ -66,7 +70,7 @@ class BaseRepository:
                 values_to_change = schema.model_dump(exclude_none=True)
                 stmt = (
                     update(self.model)
-                    .where(self.model.id == obj_id)
+                    .where(self.model.obj_id == obj_id)
                     .values(**values_to_change)
                 )
             except IntegrityError:
@@ -76,24 +80,24 @@ class BaseRepository:
                 )
             session.execute(stmt)
             session.commit()
-            return self.read_by_id(id)
+            return self.read_by_id(obj_id)
 
     def update_attributes(self, obj_id: int, to_update: Dict[str, Any] = None):
         with self.session_factory() as session:
             try:
                 stmt = (
                     update(self.model)
-                    .where(self.model.id == obj_id)
+                    .where(self.model.obj_id == obj_id)
                     .values(**to_update)
                 )
                 session.execute(stmt)
                 session.commit()
             except Exception:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-            return self.read_by_id(id)
+            return self.read_by_id(obj_id)
 
     def delete(self, obj_id: int):
         with self.session_factory() as session:
-            stmt = delete(self.model).where(self.model.id == obj_id)
+            stmt = delete(self.model).where(self.model.obj_id == obj_id)
             session.execute(stmt)
             session.commit()

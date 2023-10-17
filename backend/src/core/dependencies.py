@@ -23,7 +23,7 @@ def get_current_user(
     except (jwt.JWTError, ValidationError):
         raise AuthException(detail="Could not validate credentials")
 
-    current_user: User = service.read_by_id(token_data.id)
+    current_user: User = service.read_by_id(token_data.obj_id)
     if not current_user:
         raise AuthException(detail="User not found")
     return current_user

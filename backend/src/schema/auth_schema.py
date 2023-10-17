@@ -13,7 +13,7 @@ class TokenData(BaseModel):
 class Payload(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    obj_id: int
     email: str
     first_name: str
     last_name: str

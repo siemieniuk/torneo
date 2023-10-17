@@ -11,15 +11,15 @@ from core.database import Base
 user_discipline_association_table = Table(
     "user_disciplines",
     Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("discipline_id", ForeignKey("disciplines.id"), primary_key=True),
+    Column("user_id", ForeignKey("users.obj_id"), primary_key=True),
+    Column("discipline_id", ForeignKey("disciplines.obj_id"), primary_key=True),
 )
 
 tournament_assignment = Table(
     "tournament_assignments",
     Base.metadata,
-    Column("user_id", ForeignKey("users.id"), primary_key=True),
-    Column("tournament_id", ForeignKey("tournaments.id"), primary_key=True),
+    Column("user_id", ForeignKey("users.obj_id"), primary_key=True),
+    Column("tournament_id", ForeignKey("tournaments.obj_id"), primary_key=True),
     Column("ranking", Integer, nullable=False),
     Column("licence_number", String(16), nullable=False),
 )
@@ -28,7 +28,7 @@ tournament_assignment = Table(
 class Discipline(Base):
     __tablename__ = "disciplines"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    obj_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30), nullable=False, unique=True)
     users: Mapped[List["User"]] = relationship(
         secondary="user_disciplines",
@@ -42,7 +42,7 @@ class Result(Base):
     __tablename__ = "results"
 
     tournament_id: Mapped[int] = mapped_column(
-        ForeignKey("tournaments.id"), primary_key=True
+        ForeignKey("tournaments.obj_id"), primary_key=True
     )
     match_id: Mapped[int] = mapped_column(primary_key=True)
     selected_winner_1: Mapped[int | None] = mapped_column(Integer)
@@ -52,7 +52,7 @@ class Result(Base):
 # TODO: location - geometry
 class Tournament(Base):
     __tablename__ = "tournaments"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    obj_id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     time_start: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     time_finish: Mapped[datetime] = mapped_column(DateTime, nullable=False)
@@ -60,17 +60,17 @@ class Tournament(Base):
     players: Mapped[List["User"]] = relationship(
         secondary="tournament_assignments", back_populates="tournaments"
     )
-    discipline_id: Mapped[int] = mapped_column(ForeignKey("disciplines.id"))
+    discipline_id: Mapped[int] = mapped_column(ForeignKey("disciplines.obj_id"))
     discipline: Mapped["Discipline"] = relationship(back_populates="tournaments")
-    organizer_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    organizer_id: Mapped[int] = mapped_column(ForeignKey("users.obj_id"))
     organizer: Mapped["User"] = relationship(back_populates="organized_tournaments")
-    sponsor_id: Mapped[int | None] = mapped_column(ForeignKey("sponsors.id"))
+    sponsor_id: Mapped[int | None] = mapped_column(ForeignKey("sponsors.obj_id"))
     sponsor: Mapped[Optional["Sponsor"]] = relationship(back_populates="tournaments")
 
 
 class Sponsor(Base):
     __tablename__ = "sponsors"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    obj_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
     img_path: Mapped[str | None] = mapped_column(String(256))
     tournaments: Mapped[List["Tournament"]] = relationship(back_populates="sponsor")
@@ -79,7 +79,7 @@ class Sponsor(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    obj_id: Mapped[int] = mapped_column(primary_key=True)
     first_name: Mapped[str] = mapped_column(String(30), nullable=False)
     last_name: Mapped[str] = mapped_column(String(30), nullable=False)
     email: Mapped[str] = mapped_column(String(254), nullable=False, unique=True)

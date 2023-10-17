@@ -37,7 +37,6 @@ def decode_jwt(token: str) -> dict:
         payload = jwt.decode(token, SECRET_KEY, algorithms=JWT_ALGORITHM)
         return payload
     except jwt.PyJWTError as e:
-        print(e)
         return {}
 
 

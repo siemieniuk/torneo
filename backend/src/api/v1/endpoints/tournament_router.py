@@ -7,9 +7,14 @@ from fastapi_pagination import Page
 
 from core.container import Container
 from core.dependencies import get_current_active_user
-from schema.tournament_schema import TournamentCreateSchema, TournamentSchema, TournamentUpdateSchema
+from schema.tournament_schema import (
+    TournamentCreateSchema,
+    TournamentSchema,
+    TournamentUpdateSchema,
+)
 from schema.user_schema import UserSchema
 from service.tournament_service import TournamentService
+from util.str_operations import str_empty
 
 router = APIRouter(prefix="/tournament", tags=["tournament"])
 
@@ -32,44 +37,48 @@ async def create_tournament(
 @router.get("")
 @inject
 async def get_paginated_tournaments(
+    name: str = "",
     tournament_service: TournamentService = Depends(
         Provide[Container.tournament_service]
     ),
 ) -> Page[TournamentSchema]:
-    return tournament_service.read_paginated()
+    if str_empty(name):
+        return tournament_service.read_paginated()
+    else:
+        return tournament_service.read_paginated_by_name(name)
 
 
-@router.get("/{id}")
+@router.get("/{obj_id}")
 @inject
 async def get_tournament(
-    id: int,
+    obj_id: int,
     tournament_service: TournamentService = Depends(
         Provide[Container.tournament_service]
     ),
 ):
-    return tournament_service.read_by_id(id)
+    return tournament_service.read_by_id(obj_id)
 
 
-@router.put("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{obj_id}", status_code=status.HTTP_204_NO_CONTENT)
 @inject
 async def update_tournament(
-    id: int,
+    obj_id: int,
     tournament: TournamentUpdateSchema,
     current_user: UserSchema = Depends(get_current_active_user),
     tournament_service: TournamentService = Depends(
         Provide[Container.tournament_service]
     ),
 ):
-    return tournament_service.update(id, tournament, current_user)
+    return tournament_service.update(obj_id, tournament, current_user)
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{obj_id}", status_code=status.HTTP_204_NO_CONTENT)
 @inject
 async def delete_tournament(
-    id: int,
+    obj_id: int,
     current_user: UserSchema = Depends(get_current_active_user),
     tournament_service: TournamentService = Depends(
         Provide[Container.tournament_service]
     ),
 ):
-    return tournament_service.delete(id, current_user)
+    return tournament_service.delete(obj_id, current_user)

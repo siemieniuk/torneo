@@ -17,10 +17,10 @@ def get_all_users(
     return service.read_paginated()
 
 
-@router.get("/{id}")
+@router.get("/{obj_id}")
 @inject
 def get_user_by_id(
-    id: int,
+    obj_id: int,
     service: UserService = Depends(Provide[Container.user_service]),
 ) -> UserSchema:
-    return service.read_by_id(id)
+    return service.read_by_id(obj_id)

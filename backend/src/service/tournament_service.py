@@ -51,10 +51,13 @@ class TournamentService(BaseService):
 
         new_record = TournamentInsertSchema(
             **tournament.model_dump(),
-            organizer_id=current_user.id,
+            organizer_id=current_user.obj_id,
         )
 
         return self.tournament_repository.create(new_record)
+
+    def read_paginated_by_name(self, name: str):
+        return self.tournament_repository.read_paginated_by_name(name)
 
     def update(
         self,
@@ -83,4 +86,4 @@ class TournamentService(BaseService):
         db_tournament = self.tournament_repository.read_by_id(tournament_id)
         db_tournament = TournamentSchema.model_validate(db_tournament)
 
-        return db_tournament.organizer_id == user.id
+        return db_tournament.organizer_id == user.obj_id

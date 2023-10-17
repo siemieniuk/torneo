@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 class UserSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    obj_id: int
     first_name: str
     last_name: str
     email: EmailStr
@@ -29,7 +29,10 @@ class UserRegisterSchema(UserLoginSchema):
         return self
 
 
-class UserCreateSchema(UserSchema):
+class UserCreateSchema(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
     password: str
 
 
