@@ -7,7 +7,7 @@ function Layout(): React.JSX.Element {
   return (
     <>
       <Header />
-      <div className="container vh-100 pt-5">
+      <div className="container vh-100 mt-5 pt-5">
         <Outlet />
       </div>
       <Footer />
