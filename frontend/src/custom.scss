@@ -1,0 +1,33 @@
+// Override default variables before the import
+// $body-bg: #000;
+
+$theme-colors: (
+    "primary": #f77f00,
+    "secondary": #ffb700,
+    "tertiary": #e75480,
+    "light": #fff,
+    "dark": #6c757d
+);
+
+.nav-link {
+    color: #fff;
+}
+
+// fonts
+// $font-family-sans-serif: 'Helvetica Neue', Helvetica, Arial, sans-serif !default;
+// $font-size-base: 14px;
+// $line-height-base: 1.42857;
+// $headings-font-weight: 500;
+
+// colors
+// $brand-primary: #f77f00;
+// $brand-success: #ffb700;
+// $brand-info: #e75480;
+// $brand-warning: #f0ad4e;
+// $brand-danger: #d9534f;
+
+$gray-light: #777777; // muted text
+$gray-lighter: #dddddd; // lines
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';
