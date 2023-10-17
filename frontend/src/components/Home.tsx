@@ -2,15 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { GlobalContext } from "../App";
 import isAuthenticated from "../context/isAuthenticated";
+import BrowseTournaments from "./tournament/BrowseTournaments"
 
 function Home(): React.JSX.Element {
   const [name, setName] = useState("")
-  const fetchHelloMessage = () => {
-    axios.get("http://localhost:8000/api/v1/auth")
-      .then(response => {
-        console.log(response.data)
-      })
-  }
 
   if (isAuthenticated()) {
     const token = localStorage.getItem("access-token")
@@ -29,9 +24,6 @@ function Home(): React.JSX.Element {
       })
   }
 
-  useEffect(() => {
-    fetchHelloMessage()
-  }, [])
   return (
     <div className="App">
       <div className="container-fluid">
@@ -42,6 +34,8 @@ function Home(): React.JSX.Element {
             <em>Empty</em>
           </>
         )}
+        <h2>Upcoming tournaments: </h2>
+        <BrowseTournaments />
       </div>
     </div>
   );

@@ -22,7 +22,6 @@ function Login(): React.JSX.Element {
   const { isAuthenticated, setIsAuthenticated } = useContext(GlobalContext);
 
   useEffect(() => {
-    console.log(localStorage.getItem("token"));
     if (localStorage.getItem("token") != "" && localStorage.getItem("token") != null) {
       navigate("/");
     }
