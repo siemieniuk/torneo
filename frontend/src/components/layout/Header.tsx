@@ -13,13 +13,19 @@ function Header(): React.JSX.Element {
   }
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary" fixed="top">
+    <Navbar bg="primary" variant="light" expand="lg" fixed="top">
       <Container>
-        <Navbar.Brand href="#home"></Navbar.Brand>
+        <Navbar.Brand href="/">
+          <img src="/logo_big.png"
+            height="30"
+            className="d-inline-block align-top"
+            alt="Torneo logo"
+          />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link className="navbar-link" href="/">Home</Nav.Link>
             {isAuthenticated() ?
               <>
                 <Nav.Link onClick={logout}>Logout</Nav.Link>
