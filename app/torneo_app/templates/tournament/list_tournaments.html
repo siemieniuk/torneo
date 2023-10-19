@@ -1,7 +1,7 @@
-{% if tournament %}
+{% if tournaments %}
 <div class="row">
+  {% for tournament in tournaments %}
   <div class="col-sm-6 mt-2 mb-2">
-    {% for tournament in tournaments %}
     <div class="card">
       <div class="card-header">
         <h5>{{ tournament.name }}</h5>
@@ -17,13 +17,13 @@
           Deadline: {{ tournament.applying_deadline | date:'Y-m-d G-i' }}
         </li>
         <li class="list-group-item">
-          <a class="btn btn-primary" href="{% url 'tournament_detail' id=tournament.id %}">Details</a>
+          <a class="btn btn-primary" href="{% url 'tournament_detail' tournament_id=tournament.id %}">Details</a>
         </li>
       </ul>
     </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
 {% else %}
 <p>Nothing to display</p>
 {% endif %}

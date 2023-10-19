@@ -3,11 +3,15 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
-<a class="btn btn-primary" href="{% url 'new_tournament' %}">&plus; Add new tournament</a>
-{% endif %}
+<div class="row">
+  <div class="col-sm-6 mx-auto">
+    {% if user.is_authenticated %}
+    <a class="btn btn-primary" href="{% url 'new_tournament' %}">&plus; Add new tournament</a>
+    {% endif %}
 
-<h2>Upcoming tournaments</h2>
+    <h2 class="mx-auto">Upcoming tournaments</h2>
+  </div>
+</div>
 
 {% include 'tournament/list_paginated_tournaments.html' with page_obj=page_obj %}
 
