@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 
 import pytz
 
@@ -17,3 +18,9 @@ def is_in_future(date):
 
 def str_empty(s: str) -> bool:
     return s and s.strip() != ""
+
+
+class UserStatus(Enum):
+    NORMAL = 0
+    ORGANIZER = 1
+    APPLIED = 2
