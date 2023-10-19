@@ -47,7 +47,7 @@ class Tournament(models.Model):
 
     def save(self, *args, **kwargs):
         if is_in_past(self.applying_deadline):
-            raise ValidationError("The applying_date cannot be in the past!")
+            raise ValidationError("The applying_deadline cannot be in the past!")
         super(Tournament, self).save(*args, **kwargs)
 
     def __str__(self):
