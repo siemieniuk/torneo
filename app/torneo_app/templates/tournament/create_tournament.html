@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Set a new tournament{% endblock %}
+{% block content%}
+<form method="post" action="{% url 'new_tournament' %}">
+  {% csrf_token %}
+  <input type="submit" class="btn btn-primary" value="Host a new tournament">
+</form>
+{% endblock %}

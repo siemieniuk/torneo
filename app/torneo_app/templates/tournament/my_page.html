@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}My tournaments{% endblock %}
+
+{% block content %}
+
+<h1>Applied tournaments</h1>
+{% include 'tournament/list_tournaments.html' with tournaments=tournaments %}
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Main page{% endblock %} | Torneo</title>
+  {% load bootstrap5 %}
+  {% bootstrap_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" />
+  <meta name=" description" content="A tournament app">
+  <meta name="keywords" content="tournament, torneo">
+</head>
+
+<body>
+  {% include "header.html" %}
+  <main class="container">{% block content %}{% endblock %}</main>
+  {% include "footer.html" %}
+  {% bootstrap_javascript %}
+</body>
+
+</html>
