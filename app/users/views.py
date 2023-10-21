@@ -7,7 +7,8 @@ from users.forms import CustomUserCreationForm
 def register_view(request):
     match (request.method):
         case "GET":
-            print(type(request))
+            if request.user.is_authenticated:
+                return redirect("index")
             return render(
                 request,
                 "registration/register.html",
