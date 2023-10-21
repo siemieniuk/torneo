@@ -1,3 +1,7 @@
+:root {
+    --color-primary: #f77f00;
+}
+
 main {
     min-height: 90vh;
     padding-top: 10vh;
@@ -10,4 +14,25 @@ footer {
 .btn-primary {
     background-color: #f77f00 !important;
     border-color: #f77f00 !important;
+}
+
+.btn-outline-primary.disabled {
+    border-color: gray;
+    color: gray;
+}
+
+.btn-outline-primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+}
+
+.sponsor-logo {
+    max-height: 40px;
+    max-width: 40px;
+    margin: 5px;
 }
