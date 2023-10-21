@@ -27,6 +27,7 @@ class Tournament(models.Model):
     )
     organizer = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     discipline = models.ForeignKey(Discipline, on_delete=models.SET_NULL, null=True)
+    sponsors = models.ManyToManyField("Sponsor", related_name="tournaments", blank=True)
 
     @property
     def applied_participants_count(self):
@@ -37,7 +38,7 @@ class Tournament(models.Model):
 
     @property
     def has_started(self):
-        return not is_in_past(self.applying_deadline)
+        return is_in_past(self.applying_deadline)
 
     class Meta:
         indexes = [
@@ -58,9 +59,8 @@ class Sponsor(models.Model):
     name = models.CharField(max_length=50)
     logo = models.ImageField(upload_to="images/")
 
-    tournaments = models.ManyToManyField(
-        Tournament, related_name="sponsors", blank=True
-    )
+    def __str__(self):
+        return self.name
 
 
 class Result(models.Model):
@@ -88,7 +88,11 @@ class TournamentAssignment(models.Model):
     )
 
     class Meta:
-        unique_together = (("tournament", "player"),)
+        unique_together = (
+            ("tournament", "player"),
+            ("tournament", "ranking"),
+            ("tournament", "licence_number"),
+        )
 
     def save(self, *args, **kwargs):
         if is_in_past(self.tournament.applying_deadline):
