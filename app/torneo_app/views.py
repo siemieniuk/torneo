@@ -28,6 +28,18 @@ def get_tournament_and_status(
 
 
 def index(request: HttpRequest):
+def custom_page_unauthorized(request: HttpRequest, *args, **argv):
+    return render(request, "403.html", status=403)
+
+
+def custom_page_not_found(request: HttpRequest, *args, **argv):
+    return render(request, "404.html", status=404)
+
+
+def custom_page_unauthorized(request: HttpRequest, *args, **argv):
+    return render(request, "500.html", status=500)
+
+
     search = request.GET.get("search", "").strip()
     tournaments = (
         Tournament.objects.filter(applying_deadline__gt=now(), name__icontains=search)

@@ -25,5 +25,11 @@ urlpatterns = [
     path("accounts/", include("users.urls")),
 ]
 
+handler403 = "torneo_app.views.custom_page_unauthorized"
+handler404 = "torneo_app.views.custom_page_not_found"
+handler500 = "torneo_app.views.custom_page_unauthorized"
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
