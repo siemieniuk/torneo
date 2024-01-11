@@ -1,9 +1,10 @@
 asgiref==3.7.2
+debugpy # for debugging
 Django==4.2.5
-sqlparse==0.4.4
+django-bootstrap-v5
 django-livereload-server
 psycopg2-binary==2.9.6
-# django-crispy-forms
-django-bootstrap-v5
 pillow
 pytz
+sqlparse==0.4.4
+six
