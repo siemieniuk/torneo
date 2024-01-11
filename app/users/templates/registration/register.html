@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<h2>Register a new account</h2>
+<form method="post" action="{% url 'register' %}">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons submit="Register"%}{% endbuttons %}
+</form>
+<p class="text-center">Already have an account? <a class="link-primary" href="{% url 'login' %}">Sign In</a>
+  {% endblock %}
