@@ -18,7 +18,6 @@ class Discipline(models.Model):
         return self.name
 
 
-# TODO: Add geometry
 class Tournament(models.Model):
     name = models.CharField(max_length=100)
     applying_deadline = models.DateTimeField(default=datetime.datetime.now)
@@ -26,8 +25,15 @@ class Tournament(models.Model):
         validators=[MinValueValidator(2)]
     )
     organizer = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    discipline = models.ForeignKey(Discipline, on_delete=models.SET_NULL, null=True)
-    sponsors = models.ManyToManyField("Sponsor", related_name="tournaments", blank=True)
+    discipline = models.ForeignKey(
+        Discipline, on_delete=models.SET_NULL, null=True
+    )
+    sponsors = models.ManyToManyField(
+        "Sponsor", related_name="tournaments", blank=True
+    )
+    is_ladder_created = models.BooleanField(default=False)
+    longitude = models.FloatField(default=0.0)
+    latitude = models.FloatField(default=0.0)
 
     @property
     def applied_participants_count(self):
@@ -47,8 +53,11 @@ class Tournament(models.Model):
         ]
 
     def save(self, *args, **kwargs):
-        if is_in_past(self.applying_deadline):
-            raise ValidationError("The applying_deadline cannot be in the past!")
+        updated = kwargs.pop("updated", None)
+        if not updated and is_in_past(self.applying_deadline):
+            raise ValidationError(
+                "The applying_deadline cannot be in the past!"
+            )
         super(Tournament, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -70,13 +79,22 @@ class Result(models.Model):
     match_id = models.IntegerField()
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
     player_1 = models.ForeignKey(
-        MyUser, on_delete=models.SET_NULL, related_name="first_player", null=True
+        MyUser,
+        on_delete=models.SET_NULL,
+        related_name="first_player",
+        null=True,
     )
     player_2 = models.ForeignKey(
-        MyUser, on_delete=models.SET_NULL, related_name="second_player", null=True
+        MyUser,
+        on_delete=models.SET_NULL,
+        related_name="second_player",
+        null=True,
     )
     selected_winner_1 = models.IntegerField(null=True)
     selected_winner_2 = models.IntegerField(null=True)
+
+    def __str__(self):
+        return f"Tournament {self.tournament.pk}: {self.player_1} vs. {self.player_2}"
 
 
 class TournamentAssignment(models.Model):
@@ -98,14 +116,18 @@ class TournamentAssignment(models.Model):
         if is_in_past(self.tournament.applying_deadline):
             raise ValidationError("Event has started")
 
-        my_assignments = TournamentAssignment.objects.filter(tournament=self.tournament)
+        my_assignments = TournamentAssignment.objects.filter(
+            tournament=self.tournament
+        )
 
         applied = my_assignments.count()
         if applied > self.tournament.max_number_of_participants:
             raise ValidationError("Limit achieved!")
         rankings = set(my_assignments.values_list("ranking"))
         if self.ranking in rankings:
-            raise ValidationError("The specified ranking exists among participants")
+            raise ValidationError(
+                "The specified ranking exists among participants"
+            )
 
         super(TournamentAssignment, self).save(*args, **kwargs)
 
