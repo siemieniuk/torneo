@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<div class="alert alert-danger">Your username and password didn't match. Please try again.</div>
+{% endif %}
+
+{% if next %}
+{% if user.is_authenticated %}
+<p>Your account doesn't have access to this page. To proceed,
+  please login with an account that has access.</p>
+{% else %}
+<p>Please login to see this page.</p>
+{% endif %}
+{% endif %}
+
+<h2>Login page</h2>
+
+<form class="w-100" method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-6 col-lg-4 mx-auto">
+      <div class="d-flex flex-column gap-2">
+        <div class="form-group">
+          <label for="username">Email</label>
+          <input type="email" class="form-control" id="username" name="username" placeholder="email" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
+        </div>
+        <input class="btn btn-primary" type="submit" value="login">
+        <a class="text-end" class="link-secondary text-end" href="{% url 'password_reset' %}">Lost password?</a>
+        <input type="hidden" name="next" value="{{ next }}">
+        <p class="text-center">Don't have an account? <a class="link-primary" href="{% url 'register' %}">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</form>

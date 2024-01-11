@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
+{% load filters %}
 {% block title %}Apply for "{{ tournament.name }}"{% endblock %}
 
 {% block content %}
-<h1>{{ tournament.name }}</h1>
+<h1>Apply for "{{ tournament.name }}"</h1>
+<form class="w-100" name="apply for tournament" action="{% url 'tournament_apply' tournament_id=tournament.id %}"
+  method="POST">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-6 col-lg-4 mx-auto">
+      <div class="d-flex flex-column gap-2">
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          {{ form.ranking.errors }}
+          {{ form.ranking.label_tag }}
+          {{ form.ranking | addclass:'form-control' }}
+        </div>
+        <div class="form-group">
+          {{ form.licence_number.errors }}
+          {{ form.licence_number.label_tag }}
+          {{ form.licence_number | addclass:'form-control'}}
+        </div>
+        <button class="btn btn-primary w-100" type="submit">Apply</button>
+      </div>
+    </div>
+  </div>
+</form>
 {% endblock %}

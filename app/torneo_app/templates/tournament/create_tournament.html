@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
+
 {% block title %}Set a new tournament{% endblock %}
+
 {% block content%}
-<form method="post" action="{% url 'new_tournament' %}">
+<h1>Create a new tournament</h1>
+<form name="Create tournament" class="form-horizontal" action="{% url 'new_tournament' %}" method="POST">
   {% csrf_token %}
-  <input type="submit" class="btn btn-primary" value="Host a new tournament">
+  {% bootstrap_form form layout="horizontal" %}
+  <input class="btn btn-primary w-100" type="submit" value="Create">
 </form>
 {% endblock %}

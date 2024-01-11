@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h2>Upcoming tournaments</h2>
+
+<section class="row w-100">
+  <div class="col-md-9 col-lg-6 mx-auto mb-3">
+    <form name="search" action="{% url 'browse_tournaments' %}">
+      {% csrf_token %}
+      <div class="input-group">
+        <input class="form-control" type="text" name="search" placeholder="Search...">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% include 'tournament/list_tournaments.html' with tournaments=page_obj %}
+
+<div class="btn-toolbar d-flex justify-content-center gap-3 my-3" role="toolbar"
+  arial-label="Toolbar with pagination and option to add a new tournament">
+
+  {% include 'common/paginator.html' %}
+
+  {% if user.is_authenticated %}
+  <div class="btn-group">
+    <a class="btn btn-primary" href="{% url 'new_tournament' %}">&plus; Add new tournament</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

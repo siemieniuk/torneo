@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Deleting Tournament{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+  <p>Are you sure you want to delete this tournament?</p>
+  <div class="btn-group">
+    <form action="{% url 'delete_tournament' tournament_id=tournament.id %}" method="POST">
+      {% csrf_token %}
+      <input class="btn btn-danger" type="submit" value="YES">
+    </form>
+    <a class="btn btn-light" href="{% url 'tournament_detail' tournament_id=tournament.id %}">NO</a>
+  </div>
+</div>
+{% endblock %}

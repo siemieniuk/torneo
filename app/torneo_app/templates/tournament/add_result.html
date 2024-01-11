@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Add new result{% endblock %}
+
+{% block content %}
+<a class="btn btn-primary align-self-start mt-1 mr-1"
+  href="{% url 'tournament_detail' tournament_id=result.tournament.pk %}">
+  ← Go Back
+</a>
+<div class="d-flex justify-content-center flex-column align-items-center">
+  <h2>Add new result</p>
+</div>
+<form action="{% url 'new_result' pk=result.pk %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_div }}
+  <input class="btn btn-primary mt-2 w-100" type="submit" value="Send New Result">
+</form>
+{% endblock %}

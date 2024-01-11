@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-md-6 col-lg-4 mx-auto">
+    <div class="d-flex flex-column gap-2">
+      <div class="form-group">
+        <label for="ranking">Email</label>
+        <input type="number" min="0" class="form-control" id="ranking" name="ranking" placeholder="0" required
+          autofocus>
+      </div>
+      <div class="form-group">
+        <label for="licence_number">Password</label>
+        <input type="text" minlength="16" maxlength="16" class="form-control" id="licence_number" name="password" placeholder="password" required>
+      </div>
+      <input class="btn btn-primary" type="submit" value="Apply">
+      <input type="hidden" name="next" value="{{ next }}">
+    </div>
+  </div>

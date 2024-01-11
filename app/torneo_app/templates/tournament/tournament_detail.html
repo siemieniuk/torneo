@@ -1,34 +1,151 @@
 {% extends 'base.html' %}
 {% block title %}{{ tournament.name }}{% endblock %}
+
+{% block additional_styles %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+{% endblock %}
+
 {% block content %}
-<a class="btn btn-primary" href="{% url 'index' %}">← Go back</a>
-<div class="row">
-  <div class="col-md-6">
-    <h1>{{ tournament.name }}</h1>
-    {% if not user.is_authenticated %}
-    <p>You are not logged in. After clicking a button, you will be asked to log in.</p>
-    <a class="btn btn-primary" href="{% url 'tournament_apply' tournament_id=tournament.id %}">
-      Apply for tournament
-    </a>
-    {% elif is_organizer %}
-    <p>This is your tournament. You can edit all the details below.</p>
-    {% elif has_applied %}
-    <p>You have been assigned to this tournament</p>
-    {% else %}
-    <a class="btn btn-primary" href="{% url 'tournament_apply' tournament_id=tournament.id %}">
-      Apply for tournament
-    </a>
+{% load static %}
+<a class="btn btn-primary align-self-start mt-1 mr-1" href="{% url 'browse_tournaments' %}">← Go back</a>
+<div class="d-flex gap-3 justify-content-center align-items-center mt-3 mb-3 mb-lg-5">
+  <h1 class="text-center">{{ tournament.name }}</h1>
+  {% if is_organizer %}
+  <div class="btn-group">
+    <a class="btn btn-primary" href="{% url 'update_tournament' tournament_id=tournament.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'delete_tournament' tournament_id=tournament.id %}">X</a>
+  </div>
+  {% endif %}
+</div>
+<div class="row w-100">
+  {% if tournament.has_started %}
+  <h5 class="text-center">
+    Results
+    {% if result %}
+    <a class="btn btn-primary" href="{% url 'new_result' pk=result.pk %}">Add</a>
     {% endif %}
-    <p>Applied: {{ tournament.applied_participants_count }} / {{ tournament.max_number_of_participants }}</p>
-    {% if tournament.sponsors %}
-    <h2> Sponsors </h2>
+  </h5>
+  <div id="results-wrapper" class="col-12">
+    <div id="results"></div>
+  </div>
+  {% endif %}
+  <div class="col-md-6 mt-5">
+    <h5 class="text-center">Details</h5>
+    <table class="table">
+      <tbody>
+        <tr>
+          <th scope="row">Discipline: </th>
+          <td>{{ tournament.discipline }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Organizer:</th>
+          <td>{{ tournament.organizer }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Players:</th>
+          <td>{{ tournament.applied_participants_count }} / {{ tournament.max_number_of_participants }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Deadline:</th>
+          <td>{{ tournament.applying_deadline | date:'Y-m-d G:i' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6 mt-5">
+    <h5 class="text-center">Location</h5>
+    <div id="map"></div>
+  </div>
+  {% if tournament.sponsors %}
+  <div class="col-md-6">
+    <h2 class="mt-3"> Sponsors </h2>
     {% for sponsor in tournament.sponsors.all %}
     <div class="col-md-6">
-      <p>{{ sponsor.name }}</p>
-      <img alt="{{ sponsor.name }}'s logo" src="{{ sponsor.logo }}">
+      <img alt="{{ sponsor.name }}'s logo" class="sponsor-logo" src="{% get_media_prefix %}{{ sponsor.logo }}">
     </div>
     {% endfor %}
-    {% endif %}
   </div>
+  {% endif %}
 </div>
+<div class="btn-toolbar flex-grow-1 d-flex flex-column align-items-center justify-content-center my-3" role="toolbar"
+  arial-label="Toolbar with an option to applying for tournament">
+  {% if not tournament.has_started %}
+  {% if not user.is_authenticated %}
+  <p>You are not logged in. After clicking a button, you will be asked to log in.</p>
+  {% endif %}
+  {% if has_applied %}
+  <p>You have been assigned to this tournament</p>
+  {% elif tournament.max_number_of_participants != tournament.applied_participants_count %}
+  <a class="btn btn-primary" href="{% url 'tournament_apply' tournament_id=tournament.id %}">
+    Apply for tournament
+  </a>
+  {% else %}
+  <p>The maximum number of players was reached.</p>
+  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block additional_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+<script>
+  const lon = {{ tournament.longitude }};
+  const lat = {{ tournament.latitude }};
+
+  const map = new ol.Map({
+    target: 'map',
+    layers: [
+      new ol.layer.Tile({
+        source: new ol.source.OSM()
+      }),
+    ],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([lon, lat]),
+      zoom: 13
+    })
+  });
+
+  const markers = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+  })
+
+  map.addLayer(markers);
+
+  let marker = new ol.Feature({
+    geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat])),
+    title: "{{ tournament.name }}",
+  });
+  marker.setStyle(
+    new ol.style.Style({
+      image: new ol.style.Icon({
+        src: "{% static 'img/marker.png' %}",
+        scale: 0.08,
+      })
+    })
+  )
+  markers.getSource().addFeature(marker);
+</script>
+
+{% if tournament.has_started %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/jquery.gracket.min.js' %}"></script>
+<script>
+  const results = document.querySelector("div#results");
+  function processData(data) {
+    $("#results").gracket({
+      // canvasLineColor: "#000",
+      src: data
+    })
+  }
+
+  const headers = {
+    'Content-Type': 'application/json; charset=utf-8',
+  }
+  fetch("http://localhost:8080/tournament/{{ tournament.id }}/results", headers)
+    .then(response => response.json())
+    .then(json => processData(json));
+</script>
+{% endif %}
 {% endblock %}

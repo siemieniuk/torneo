@@ -1,7 +1,7 @@
 {% if tournaments %}
-<div class="row">
+<div class="row w-100">
   {% for tournament in tournaments %}
-  <div class="col-sm-6 mt-2 mb-2">
+  <div class="col-sm-6 col-lg-3 mt-2 mb-2">
     <div class="card">
       <div class="card-header">
         <h5>{{ tournament.name }}</h5>
@@ -11,10 +11,10 @@
           Applied: {{ tournament.applied_participants_count }} / {{ tournament.max_number_of_participants }}
         </li>
         <li class="list-group-item">
-          Discipline: {{ tournament.Discipline.name}}
+          Discipline: {{ tournament.discipline }}
         </li>
         <li class="list-group-item">
-          Deadline: {{ tournament.applying_deadline | date:'Y-m-d G-i' }}
+          Deadline: {{ tournament.applying_deadline | date:'Y-m-d G:i' }}
         </li>
         <li class="list-group-item">
           <a class="btn btn-primary" href="{% url 'tournament_detail' tournament_id=tournament.id %}">Details</a>
@@ -25,5 +25,7 @@
   {% endfor %}
 </div>
 {% else %}
-<p>Nothing to display</p>
+<div class="d-flex justify-content-center">
+  <p>Nothing to display</p>
+</div>
 {% endif %}
