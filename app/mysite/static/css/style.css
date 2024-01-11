@@ -1,5 +1,8 @@
 :root {
     --color-primary: #f77f00;
+    --color-secondary: #212529;
+    --color-font: white;
+    --gteam-round: 5px;
 }
 
 main {
@@ -12,8 +15,9 @@ footer {
 }
 
 .btn-primary {
-    background-color: #f77f00 !important;
-    border-color: #f77f00 !important;
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-font) !important;
 }
 
 .btn-outline-primary.disabled {
@@ -35,4 +39,105 @@ footer {
     max-height: 40px;
     max-width: 40px;
     margin: 5px;
+}
+
+.link-primary {
+    color: var(--color-primary) !important;
+}
+
+.welcome-section>h1 {
+    font-size: 2rem;
+}
+
+@media screen and (min-width: 768px) {
+    .welcome-section>h1 {
+        font-size: 3rem;
+    }
+
+    .welcome-section img {
+        width: 345px;
+    }
+}
+
+div#map {
+    width: 100%;
+    height: 350px;
+    border: solid rgba(128, 128, 128, 0.5) 3px;
+    padding: 4px;
+}
+
+#results-wrapper {
+    overflow-x: scroll;
+    border: solid rgba(128, 128, 128, 0.5) 3px;
+}
+
+.g_gracket {
+    width: 9999px;
+    padding: 55px 15px 5px;
+    line-height: 100%;
+    position: relative;
+}
+
+.g_round {
+    float: left;
+    margin-right: 70px;
+}
+
+.g_game {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.g_gracket h3 {
+    margin: 0;
+    padding: 10px 8px 8px;
+    font-size: 18px;
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.g_team {
+    background: rgba(247, 127, 0, 0.5);
+    /* color: black; */
+    border: solid var(--color-primary) 2px;
+    margin-top: 2px;
+}
+
+.g_team:first-child {
+    border-top-right-radius: var(--gteam-round);
+    border-top-left-radius: var(--gteam-round);
+}
+
+.g_team:last-child {
+    border-bottom-right-radius: var(--gteam-round);
+    border-bottom-left-radius: var(--gteam-round);
+}
+
+/* .g_team:last-child {
+    background: #FCB821;
+} */
+
+.g_round:last-child {
+    margin-right: 20px;
+}
+
+.g_winner {
+    background: #444;
+}
+
+.g_winner .g_team {
+    background: none;
+}
+
+.g_current {
+    cursor: pointer;
+    background: #A0B43C !important;
+}
+
+.g_round_label {
+    top: -5px;
+    font-weight: normal;
+    color: #CCC;
+    text-align: center;
+    font-size: 18px;
 }
