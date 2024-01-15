@@ -18,6 +18,9 @@ additionally tournament results are fetched
 - Django 4.2
 - Python 3.11
 
+## Additional Scripts
+- [JQueryBracket](https://github.com/teijo/jquery-bracket)
+
 ## Screenshots
 ![Main Page](docs/screenshots/main_page.jpg)
 
